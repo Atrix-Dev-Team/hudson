@@ -49,8 +49,9 @@ export CL_PFX="\"\033[34m\""
 export CL_INS="\"\033[32m\""
 export CL_RST="\"\033[0m\""
 
-rm -rf $WORKSPACE/archive
-mkdir -p $WORKSPACE/archive
+cd $WORKSPACE
+rm -rf archive
+mkdir -p archive
 export BUILD_NO=$BUILD_NUMBER
 unset BUILD_NUMBER
 export CM_EXTRAVERSION=$BUILD_NO
