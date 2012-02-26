@@ -172,7 +172,8 @@ fi
 
 
 # archive the build.prop as well
-cat $OUT/system/build.prop > $WORKSPACE/archive/build.prop
+ZIP=$(ls $WORSKPACE/archive/update*.zip)
+unzip -c $ZIP system/build.prop > $WORKSPACE/archive/build.prop
 
 chmod -R ugo+r $WORKSPACE/archive
 echo "hihihi" > $WORKSPACE/archive/hihi.txt
