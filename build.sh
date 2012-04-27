@@ -95,7 +95,7 @@ echo "We are ready to build in $WORKSPACE/$REPO_BRANCH"
 
 . build/envsetup.sh
 lunch $LUNCH
-check_result lunch failed.
+check_result "lunch failed."
 
 rm -f $OUT/cm-*.zip*
 
@@ -144,7 +144,7 @@ rm -f $OUT/*.zip*
 make $CLEAN_TYPE
 
 mka -j$CORES bacon
-check_result Build failed.
+check_result "Build failed."
 
 echo "Files in $OUT"
 echo "############################################"
