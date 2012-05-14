@@ -198,3 +198,7 @@ unzip -p $ZIP system/build.prop > $WORKSPACE/archive/build.prop
 ls -nl $WORKSPACE/archive/cm-*.zip | awk '{print $5}'  > $(ls $WORKSPACE/archive/cm-*.zip).size
 
 chmod -R ugo+r $WORKSPACE/archive
+
+# CORE: save manifest used for build (saving revisions as current HEAD)
+rm -f .repo/local_manifest.xml
+repo manifest -o $WORKSPACE/archive/core.xml -r
