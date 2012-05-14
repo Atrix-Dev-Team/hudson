@@ -94,6 +94,12 @@ then
   . ~/.jenkins_profile
 fi
 
+echo Core Manifest:
+cat .repo/manifests/default.xml
+
+echo Local Manifest:
+cat .repo/local_manifest.xml
+
 HUDSON_DIR=$WORKSPACE/hudson
 
 echo "About to do $HUDSON_DIR/$REPO_BRANCH-setup.sh"
