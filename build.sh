@@ -96,7 +96,7 @@ echo "We are ready to build in $WORKSPACE/$REPO_BRANCH"
 lunch $LUNCH
 check_result lunch failed.
 
-rm -f $OUT/update*.zip*
+rm -f $OUT/cm-*.zip*
 
 UNAME=$(uname)
 if [ "$RELEASE_TYPE" = "CM_NIGHTLY" ]
@@ -152,7 +152,7 @@ echo "############################################"
 
 # Files to keep
 find $OUT/*.zip* | grep ota | xargs rm -f
-cp $OUT/update*.zip* $WORKSPACE/archive
+cp $OUT/cm*.zip* $WORKSPACE/archive
 if [ -d $OUT/obj/PACKAGING/target_files_intermediates/cm_*-target_files-eng.*/ ]
 then
   mkdir -p $WORKSPACE/archive/patch
@@ -172,7 +172,7 @@ fi
 
 
 # archive the build.prop as well
-ZIP=$(ls $WORSKPACE/archive/update*.zip)
+ZIP=$(ls $WORKSPACE/archive/cm-*.zip)
 unzip -c $ZIP system/build.prop > $WORKSPACE/archive/build.prop
 
 chmod -R ugo+r $WORKSPACE/archive
