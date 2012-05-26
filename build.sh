@@ -3,7 +3,7 @@
 function check_result {
   if [ "0" -ne "$?" ]
   then
-    echo $1 step failed !
+    echo $1
     exit 1
   fi
 }
@@ -44,23 +44,28 @@ then
   exit 1
 fi
 
+if [ -z "$SYNC_PROTO" ]
+then
+  SYNC_PROTO=http
+fi
+
 # colorization fix in Jenkins
 export CL_PFX="\"\033[34m\""
 export CL_INS="\"\033[32m\""
 export CL_RST="\"\033[0m\""
 
-rm -rf $WORKSPACE/archive
-mkdir -p $WORKSPACE/archive
+cd $WORKSPACE
+rm -rf archive
+mkdir -p archive
 export BUILD_NO=$BUILD_NUMBER
 unset BUILD_NUMBER
-export CM_EXTRAVERSION=$BUILD_NO
 
-export PATH=/mnt/bin:~/bin:$PATH
+export PATH=~/bin:$PATH
 
 export USE_CCACHE=1
 export BUILD_WITH_COLORS=0
 
-#REPO=$(which repo)
+REPO=$(which repo)
 if [ -z "$REPO" ]
 then
   mkdir -p ~/bin
@@ -68,8 +73,21 @@ then
   chmod a+x ~/bin/repo
 fi
 
-# git config --global user.name $(whoami)@$NODE_NAME
-# git config --global user.email jenkins@cyanogenmod.com
+git config --global user.name $(whoami)@$NODE_NAME
+git config --global user.email jenkins@cyanogenmod.com
+
+mkdir -p $REPO_BRANCH
+cd $REPO_BRANCH
+
+# always force a fresh repo init since we can build off different branches
+# and the "default" upstream branch can get stuck on whatever was init first.
+if [ -z "$CORE_BRANCH" ]
+then
+  CORE_BRANCH=$REPO_BRANCH
+fi
+rm -rf .repo/manifests*
+repo init -u $SYNC_PROTO://github.com/CyanogenMod/android.git -b $CORE_BRANCH
+check_error "repo init failed."
 
 # make sure ccache is in PATH
 export PATH="$PATH:/opt/local/bin/:$PWD/prebuilt/$(uname|awk '{print tolower($0)}')-x86/ccache"
@@ -79,26 +97,35 @@ then
   . ~/.jenkins_profile
 fi
 
-HUDSON_DIR=$WORKSPACE/hudson
+cp $WORKSPACE/hudson/$REPO_BRANCH.xml .repo/local_manifest.xml
 
-echo "About to do $HUDSON_DIR/$REPO_BRANCH-setup.sh"
-cd $WORKSPACE/$REPO_BRANCH
-if [ -f $HUDSON_DIR/$REPO_BRANCH-setup.sh ]
+echo Core Manifest:
+cat .repo/manifests/default.xml
+
+echo Local Manifest:
+cat .repo/local_manifest.xml
+
+echo Syncing...
+repo sync -d #> /dev/null 2> /tmp/jenkins-sync-errors.txt
+check_result "repo sync failed."
+echo Sync complete.
+
+if [ -f $WORKSPACE/hudson/$REPO_BRANCH-setup.sh ]
 then
-  echo "Doing $HUDSON_DIR/$REPO_BRANCH-setup.sh"
-  $HUDSON_DIR/$REPO_BRANCH-setup.sh $WORKSPACE $REPO_BRANCH
+  $WORKSPACE/hudson/$REPO_BRANCH-setup.sh
 fi
-
-cd $WORKSPACE/$REPO_BRANCH
-echo "We are ready to build in $WORKSPACE/$REPO_BRANCH"
 
 . build/envsetup.sh
 lunch $LUNCH
-check_result lunch failed.
+check_result "lunch failed."
 
-rm -f $OUT/update*.zip*
+# save manifest used for build (saving revisions as current HEAD)
+repo manifest -o $WORKSPACE/archive/manifest.xml -r
+
+rm -f $OUT/cm-*.zip*
 
 UNAME=$(uname)
+
 if [ "$RELEASE_TYPE" = "CM_NIGHTLY" ]
 then
   if [ "$REPO_BRANCH" = "gingerbread" ]
@@ -112,7 +139,12 @@ then
   export CM_SNAPSHOT=true
 elif [ "$RELEASE_TYPE" = "CM_RELEASE" ]
 then
-  export CM_RELEASE=true
+  if [ "$REPO_BRANCH" = "gingerbread" ]
+  then
+    export CYANOGEN_RELEASE=true
+  else
+    export CM_RELEASE=true
+  fi
 fi
 
 if [ ! -z "$CM_EXTRAVERSION" ]
@@ -134,33 +166,16 @@ then
   fi
 fi
 
-if [ ! "$(ccache -s|grep -E 'max cache size'|awk '{print $4}')" = "20.0" ]
+if [ ! "$(ccache -s|grep -E 'max cache size'|awk '{print $4}')" = "50.0" ]
 then
-  ccache -M 20G
+  ccache -M 50G
 fi
 
-rm -f $OUT/*.zip*
 make $CLEAN_TYPE
+mka bacon recoveryzip recoveryimage checkapi
+check_result "Build failed."
 
-mka -j$CORES bacon
-check_result Build failed.
-
-echo "Files in $OUT"
-echo "############################################"
-ls -l $OUT
-echo "############################################"
-
-# Files to keep
-find $OUT/*.zip* | grep ota | xargs rm -f
-cp $OUT/update*.zip* $WORKSPACE/archive
-if [ -d $OUT/obj/PACKAGING/target_files_intermediates/cm_*-target_files-eng.*/ ]
-then
-  mkdir -p $WORKSPACE/archive/patch
-  cp -r $OUT/obj/PACKAGING/target_files_intermediates/cm_*-target_files-eng.*/BOOT $WORKSPACE/archive/patch
-  cp -r $OUT/obj/PACKAGING/target_files_intermediates/cm_*-target_files-eng.*/META $WORKSPACE/archive/patch
-  cp -r $OUT/obj/PACKAGING/target_files_intermediates/cm_*-target_files-eng.*/OTA $WORKSPACE/archive/patch
-  cp -r $OUT/obj/PACKAGING/target_files_intermediates/cm_*-target_files-eng.*/RECOVERY $WORKSPACE/archive/patch
-fi
+cp $OUT/cm-*.zip* $WORKSPACE/archive
 if [ -f $OUT/utilties/update.zip ]
 then
   cp $OUT/utilties/update.zip $WORKSPACE/archive/recovery.zip
@@ -170,9 +185,13 @@ then
   cp $OUT/recovery.img $WORKSPACE/archive
 fi
 
-
 # archive the build.prop as well
-cat $OUT/system/build.prop > $WORKSPACE/archive/build.prop
+ZIP=$(ls $WORKSPACE/archive/cm-*.zip)
+unzip -c $ZIP system/build.prop > $WORKSPACE/archive/build.prop
 
+# CORE: save manifest used for build (saving revisions as current HEAD)
+rm -f .repo/local_manifest.xml
+repo manifest -o $WORKSPACE/archive/core.xml -r
+
+# chmod the files in case UMASK blocks permissions
 chmod -R ugo+r $WORKSPACE/archive
-echo "hihihi" > $WORKSPACE/archive/hihi.txt
