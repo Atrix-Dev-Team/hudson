@@ -113,7 +113,12 @@ then
   export CM_EXPERIMENTAL=true
 elif [ "$RELEASE_TYPE" = "CM_RELEASE" ]
 then
-  export CM_RELEASE=true
+  if [ "$REPO_BRANCH" = "gingerbread" ]
+  then
+    export CYANOGEN_RELEASE=true
+  else
+    export CM_RELEASE=true
+  fi
 fi
 
 if [ ! -z "$CM_EXTRAVERSION" ]
