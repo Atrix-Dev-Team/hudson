@@ -1,0 +1,5 @@
+*.pyc
+patch/*.pyc
+patch/common.pyc
+patch/edify_generator.pyc
+*~
