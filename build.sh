@@ -53,7 +53,7 @@ rm -rf $WORKSPACE/archive
 mkdir -p $WORKSPACE/archive
 export BUILD_NO=$BUILD_NUMBER
 unset BUILD_NUMBER
-CM_EXTRAVERSION=$BUILD_NO
+export CM_EXTRAVERSION=$BUILD_NO
 
 export PATH=/mnt/bin:~/bin:$PATH
 
