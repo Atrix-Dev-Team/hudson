@@ -108,9 +108,9 @@ then
   else
     export CM_NIGHTLY=true
   fi
-elif [ "$RELEASE_TYPE" = "CM_SNAPSHOT" ]
+elif [ "$RELEASE_TYPE" = "CM_EXPERIMENTAL" ]
 then
-  export CM_SNAPSHOT=true
+  export CM_EXPERIMENTAL=true
 elif [ "$RELEASE_TYPE" = "CM_RELEASE" ]
 then
   export CM_RELEASE=true
@@ -118,12 +118,12 @@ fi
 
 if [ ! -z "$CM_EXTRAVERSION" ]
 then
-  export CM_SNAPSHOT=true
+  export CM_EXPERIMENTAL=true
 fi
 
 if [ ! -z "$GERRIT_CHANGES" ]
 then
-  export CM_SNAPSHOT=true
+  export CM_EXPERIMENTAL=true
   IS_HTTP=$(echo $GERRIT_CHANGES | grep http)
   if [ -z "$IS_HTTP" ]
   then
