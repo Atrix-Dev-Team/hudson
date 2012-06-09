@@ -158,7 +158,7 @@ echo "############################################"
 
 # Files to keep
 find $OUT/*.zip* | grep ota | xargs rm -f
-cp $OUT/cm*.zip* $WORKSPACE/archive
+cp $OUT/cm-*.zip* $WORKSPACE/archive
 if [ -d $OUT/obj/PACKAGING/target_files_intermediates/cm_*-target_files-eng.*/ ]
 then
   mkdir -p $WORKSPACE/archive/patch
@@ -182,4 +182,3 @@ ZIP=$(ls $WORKSPACE/archive/cm-*.zip)
 unzip -c $ZIP system/build.prop > $WORKSPACE/archive/build.prop
 
 chmod -R ugo+r $WORKSPACE/archive
-echo "hihihi" > $WORKSPACE/archive/hihi.txt
