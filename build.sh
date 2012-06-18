@@ -179,6 +179,6 @@ fi
 
 # archive the build.prop as well
 ZIP=$(ls $WORKSPACE/archive/cm-*.zip)
-unzip -c $ZIP system/build.prop > $WORKSPACE/archive/build.prop
+unzip -p $ZIP system/build.prop > $WORKSPACE/archive/build.prop
 
 chmod -R ugo+r $WORKSPACE/archive
