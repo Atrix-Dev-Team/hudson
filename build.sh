@@ -161,11 +161,7 @@ find $OUT/*.zip* | grep ota | xargs rm -f
 cp $OUT/cm-*.zip* $WORKSPACE/archive
 if [ -d $OUT/obj/PACKAGING/target_files_intermediates/cm_*-target_files-eng.*/ ]
 then
-  mkdir -p $WORKSPACE/archive/patch
-  cp -r $OUT/obj/PACKAGING/target_files_intermediates/cm_*-target_files-eng.*/BOOT $WORKSPACE/archive/patch
-  cp -r $OUT/obj/PACKAGING/target_files_intermediates/cm_*-target_files-eng.*/META $WORKSPACE/archive/patch
-  cp -r $OUT/obj/PACKAGING/target_files_intermediates/cm_*-target_files-eng.*/OTA $WORKSPACE/archive/patch
-  cp -r $OUT/obj/PACKAGING/target_files_intermediates/cm_*-target_files-eng.*/RECOVERY $WORKSPACE/archive/patch
+  cp -r $OUT/obj/PACKAGING/target_files_intermediates/cm_*-target_files-eng.*/META/filesystem_config.txt $WORKSPACE/archive/
 fi
 if [ -f $OUT/utilties/update.zip ]
 then
