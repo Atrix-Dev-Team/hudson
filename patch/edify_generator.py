@@ -286,8 +286,8 @@ class EdifyGenerator(object):
                        "\n".join(self.script) + "\n")
 
     if input_path is None:
-      data = input_zip.read("OTA/bin/updater")
+      data = input_zip.read("META-INF/com/google/android/update-binary")
     else:
-      data = open(os.path.join(input_path, "updater")).read()
+      data = open(os.path.join(input_path, "update-binary")).read()
     common.ZipWriteStr(output_zip, "META-INF/com/google/android/update-binary",
                        data, perms=0755)

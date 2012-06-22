@@ -83,7 +83,8 @@ def LoadInfoDict(folder, zip):
   input target files and return a dict."""
 
   d = {}
-  try:
+  d["recovery_api_version"] = OPTIONS.recovery_api
+  """try:
     for line in open(folder + "/META/misc_info.txt").read().split("\n"):
       line = line.strip()
       #print d
@@ -92,8 +93,7 @@ def LoadInfoDict(folder, zip):
       d[k] = v
   except KeyError:
     # ok if misc_info.txt doesn't exist
-    pass
-  #raise ValueError("a")
+    pass"""
   # backwards compatibility: These values used to be in their own
   # files.  Look for them, in case we're processing an old
   # target_files zip.
@@ -134,13 +134,15 @@ def LoadInfoDict(folder, zip):
   def makeint(key):
     if key in d:
       d[key] = int(d[key], 0)
-
-  makeint("recovery_api_version")
-  makeint("blocksize")
-  makeint("system_size")
-  makeint("userdata_size")
-  makeint("recovery_size")
-  makeint("boot_size")
+  try:
+    makeint("recovery_api_version")
+  except TypeError:
+    pass
+  #makeint("blocksize")
+  #makeint("system_size")
+  #makeint("userdata_size")
+  #makeint("recovery_size")
+  #makeint("boot_size")
 
   d["fstab"] = LoadRecoveryFSTab(folder, zip)
   return d
@@ -149,14 +151,30 @@ def LoadRecoveryFSTab(folder, zip):
   class Partition(object):
     pass
 
-  try:
+  """try:
     data = open(folder + "/RECOVERY/RAMDISK/etc/recovery.fstab").read()
   except KeyError:
-    print "Warning: could not find RECOVERY/RAMDISK/etc/recovery.fstab in %s." % zip
-    data = ""
-
+    print "Warning: could not find RECOVERY/RAMDISK/etc/recovery.fstab in %s." % folder
+    data = """""
+    
   d = {}
-  for line in data.split("\n"):
+  d["/system"] = Partition()
+  d["/system"].mount_point = "/system"
+  d["/system"].fs_type = OPTIONS.system_fs
+  d["/system"].device = OPTIONS.system_dev
+  d["/system"].length = 0
+  d["/system"].device2 = None
+  
+  d["/boot"] = Partition()
+  d["/boot"].mount_point = "/boot"
+  d["/boot"].fs_type = OPTIONS.boot_fs
+  d["/boot"].device = OPTIONS.boot_dev
+  d["/boot"].length = 0
+  d["/boot"].device2 = None
+  
+  
+  
+  """for line in data.split("\n"):
     line = line.strip()
     if not line or line.startswith("#"): continue
     pieces = line.split()
@@ -164,6 +182,7 @@ def LoadRecoveryFSTab(folder, zip):
       raise ValueError("malformed recovery.fstab line: \"%s\"" % (line,))
 
     p = Partition()
+    print pieces
     p.mount_point = pieces[0]
     p.fs_type = pieces[1]
     p.device = pieces[2]
@@ -187,8 +206,9 @@ def LoadRecoveryFSTab(folder, zip):
           p.length = int(i[7:])
         else:
           print "%s: unknown option \"%s\"" % (p.mount_point, i)
-
-    d[p.mount_point] = p
+    print vars(p)
+    d[p.mount_point] = p"""
+  #sys.exit(1)
   return d
 
 
@@ -275,7 +295,9 @@ def GetBootableImage(name, prebuilt_name, unpack_dir, tree_subdir):
   'prebuilt_name', otherwise construct it from the source files in
   'unpack_dir'/'tree_subdir'."""
 
-  prebuilt_path = os.path.join(unpack_dir, "BOOTABLE_IMAGES", prebuilt_name)
+  prebuilt_path = os.path.join(unpack_dir, prebuilt_name)
+  #print prebuilt_path
+  #sys.exit(0)
   if os.path.exists(prebuilt_path):
     print "using prebuilt %s..." % (prebuilt_name,)
     return File.FromLocalFile(name, prebuilt_path)
