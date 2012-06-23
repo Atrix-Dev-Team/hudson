@@ -13,8 +13,8 @@ then
 		unset TARGET_UPDATE_FILE
 		echo "Update zip not found for current job. Exiting."
 		exit 0
-	TARGET
-		else_UPDATE_FILE=$(basename `ls $JENKINS_HOME/jobs/$DEVICE/builds/$BUILD_NO/archive/archive/update-squished.zip`)
+	else
+		TARGET_UPDATE_FILE=$(basename `ls $JENKINS_HOME/jobs/$DEVICE/builds/$BUILD_NO/archive/archive/update-squished.zip`)
 	fi
 else
 	TARGET_UPDATE_FILE=$(basename `ls $JENKINS_HOME/jobs/$DEVICE/builds/$BUILD_NO/archive/archive/cm-*.zip`)
