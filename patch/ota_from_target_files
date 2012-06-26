@@ -810,7 +810,7 @@ def main(argv):
     elif o in ("--configid"):
       OPTIONS.modelidcfg = bool(a.lower() == 'true')
     elif o in ("--override_device"):
-      OPTIONS.override_device = a`
+      OPTIONS.override_device = a
     elif o in ("--recovery_api"):
     	OPTIONS.recovery_api = int(a)
     elif o in ("--system_fs"):
