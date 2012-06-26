@@ -78,7 +78,7 @@ def CloseInheritedPipes():
       pass
 
 
-def LoadInfoDict(folder, zip):
+def LoadInfoDict(zip):
   """Read and parse the META/misc_info.txt key/value pairs from the
   input target files and return a dict."""
 
@@ -144,10 +144,10 @@ def LoadInfoDict(folder, zip):
   #makeint("recovery_size")
   #makeint("boot_size")
 
-  d["fstab"] = LoadRecoveryFSTab(folder, zip)
+  d["fstab"] = LoadRecoveryFSTab(zip)
   return d
 
-def LoadRecoveryFSTab(folder, zip):
+def LoadRecoveryFSTab(zip):
   class Partition(object):
     pass
 
@@ -208,7 +208,6 @@ def LoadRecoveryFSTab(folder, zip):
           print "%s: unknown option \"%s\"" % (p.mount_point, i)
     print vars(p)
     d[p.mount_point] = p"""
-  #sys.exit(1)
   return d
 
 
@@ -296,8 +295,6 @@ def GetBootableImage(name, prebuilt_name, unpack_dir, tree_subdir):
   'unpack_dir'/'tree_subdir'."""
 
   prebuilt_path = os.path.join(unpack_dir, prebuilt_name)
-  #print prebuilt_path
-  #sys.exit(0)
   if os.path.exists(prebuilt_path):
     print "using prebuilt %s..." % (prebuilt_name,)
     return File.FromLocalFile(name, prebuilt_path)

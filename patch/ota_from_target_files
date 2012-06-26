@@ -51,12 +51,6 @@ Usage:  ota_from_target_files [flags] input_target_files output_ota_package
 
   -a  (--aslr_mode)  <on|off>
       Specify whether to turn on ASLR for the package (on by default).
-      
-  -ins  (--info_source)  <dir>
-      Dir containing files for the source zip like misc_info.txt, etc
-      
-  -int  (--info_target)  <dir>
-      Dir containing files for the target zip like misc_info.txt, etc
 
   --backup <boolean>
       Enable or disable the execution of backuptool.sh.
@@ -816,11 +810,7 @@ def main(argv):
     elif o in ("--configid"):
       OPTIONS.modelidcfg = bool(a.lower() == 'true')
     elif o in ("--override_device"):
-      OPTIONS.override_device = a
-    elif o in ("-int", "--info_target"):
-    	OPTIONS.info_target = a
-    elif o in ("-ins", "--info_source"):
-    	OPTIONS.info_source = a
+      OPTIONS.override_device = a`
     elif o in ("--recovery_api"):
     	OPTIONS.recovery_api = int(a)
     elif o in ("--system_fs"):
@@ -836,7 +826,7 @@ def main(argv):
     return True
 
   args = common.ParseOptions(argv, __doc__,
-                             extra_opts="b:k:i:d:wne:a:int:ins",
+                             extra_opts="b:k:i:d:wne:a",
                              extra_long_opts=["board_config=",
                                               "package_key=",
                                               "incremental_from=",
@@ -847,8 +837,6 @@ def main(argv):
                                               "aslr_mode=",
                                               "backup=",
                                               "override_device=",
-                                              "info_target=",
-                                              "info_source=",
                                               "recovery_api=",
                                               "system_fs=",
                                               "system_dev=",
@@ -856,10 +844,9 @@ def main(argv):
                                               "boot_dev="],
                              extra_option_handler=option_handler)
 
-  if len(args) <= 2:
+  #if len(args) <= 2:
     #common.Usage(__doc__)
     #sys.exit(1)
-    OPTIONS
 
   if OPTIONS.extra_script is not None:
     OPTIONS.extra_script = open(OPTIONS.extra_script).read()
@@ -868,7 +855,7 @@ def main(argv):
   OPTIONS.input_tmp, input_zip = common.UnzipTemp(args[0])
 
   OPTIONS.target_tmp = OPTIONS.input_tmp
-  OPTIONS.info_dict = common.LoadInfoDict(OPTIONS.info_target, zip)
+  OPTIONS.info_dict = common.LoadInfoDict(zip)
   if OPTIONS.verbose:
     print "--- target info ---"
     common.DumpInfoDict(OPTIONS.info_dict)
@@ -894,7 +881,7 @@ def main(argv):
     OPTIONS.source_tmp, source_zip = common.UnzipTemp(OPTIONS.incremental_source)
     OPTIONS.target_info_dict = OPTIONS.info_dict
 
-    OPTIONS.source_info_dict = common.LoadInfoDict(OPTIONS.info_source, source_zip)
+    OPTIONS.source_info_dict = common.LoadInfoDict(source_zip)
     if OPTIONS.package_key is None:
       OPTIONS.package_key = OPTIONS.source_info_dict.get(
           "default_system_dev_certificate",
