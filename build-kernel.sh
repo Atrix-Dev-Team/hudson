@@ -43,8 +43,8 @@ export CL_PFX="\"\033[34m\""
 export CL_INS="\"\033[32m\""
 export CL_RST="\"\033[0m\""
 
-rm -rf $WORKSPACE/archive
-mkdir -p $WORKSPACE/archive
+rm -rf $WORKSPACE/archive-kernel
+mkdir -p $WORKSPACE/archive-kernel
 export BUILD_NO=$BUILD_NUMBER
 unset BUILD_NUMBER
 
@@ -102,7 +102,7 @@ fi
 rm -f $OUT/boot.img*
 make $CLEAN_TYPE
 
-make bootimage
+make -j$CORES bootimage
 check_result Build failed.
 
 echo "Files in $OUT"
@@ -111,7 +111,6 @@ ls -l $OUT
 echo "############################################"
 
 # Files to keep
-cp $OUT/boot.img $WORKSPACE/archive
+cp $OUT/boot.img $WORKSPACE/archive-kernel
 
-chmod -R ugo+r $WORKSPACE/archive
-echo "hihihi" > $WORKSPACE/archive/hihi.txt
+chmod -R ugo+r $WORKSPACE/archive-kernel
