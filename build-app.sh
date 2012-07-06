@@ -43,8 +43,8 @@ export CL_PFX="\"\033[34m\""
 export CL_INS="\"\033[32m\""
 export CL_RST="\"\033[0m\""
 
-rm -rf $WORKSPACE/archive-kernel
-mkdir -p $WORKSPACE/archive-kernel
+rm -rf $WORKSPACE/archive-app
+mkdir -p $WORKSPACE/archive-app
 export BUILD_NO=$BUILD_NUMBER
 unset BUILD_NUMBER
 
@@ -99,10 +99,9 @@ then
   ccache -M 20G
 fi
 
-rm -f $OUT/boot.img*
 make $CLEAN_TYPE
 
-make -j$CORES bootimage
+make -j$CORES RomUpdater
 check_result Build failed.
 
 echo "Files in $OUT"
@@ -111,7 +110,6 @@ ls -l $OUT
 echo "############################################"
 
 # Files to keep
-cp $OUT/boot.img $WORKSPACE/archive-kernel
-cp -R $WORKSPACE/out/target/product/*/system/lib/modules $WORKSPACE/archive/
+cp $OUT/system/app/RomUpdater.apk $WORKSPACE/archive-app
 
-chmod -R ugo+r $WORKSPACE/archive-kernel
+chmod -R ugo+r $WORKSPACE/archive-app
