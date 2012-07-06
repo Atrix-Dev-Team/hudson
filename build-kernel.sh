@@ -112,6 +112,6 @@ echo "############################################"
 
 # Files to keep
 cp $OUT/boot.img $WORKSPACE/archive-kernel
-cp -R $WORKSPACE/out/target/product/*/system/lib/modules $WORKSPACE/archive/
+cp $WORKSPACE/out/target/product/*/system/lib/modules/*.ko $WORKSPACE/archive/
 
 chmod -R ugo+r $WORKSPACE/archive-kernel
