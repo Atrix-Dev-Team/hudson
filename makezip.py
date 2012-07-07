@@ -23,15 +23,12 @@ ui_print("Extracting Modules..."); \n \
 set_progress(0.25); \n \
 run_program("/sbin/busybox", "mount", "/system"); \n \
 package_extract_dir("system", "/system"); \n \
-unmount("/system"); \n \
 set_progress(0.50); \n \
-ui_print("Extracting Kernel files..."); \n \
-package_extract_file("boot.img", "/tmp"); \n \
+unmount("/system"); \n \
 ui_print("Writing Boot Image..."); \n \
 set_progress(0.75); \n \
-run_program("/sbin/busybox", "dd", "if=/dev/zero", "of=%s"); \n \
-run_program("/sbin/busybox", "dd", "if=/tmp/boot.img", "of=%s"); \n \
-set_progress(1.000000);'  % (lunch, date, build_no, sys.argv[1], sys.argv[1],)
+package_extract_file("boot.img", "%s"); \n \
+set_progress(1.000000);'  % (lunch, date, build_no, sys.argv[1],)
 #print script
 zf.writestr("META-INF/com/google/android/updater-script", script)
 
