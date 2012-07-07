@@ -114,4 +114,6 @@ echo "############################################"
 cp $OUT/boot.img $WORKSPACE/archive-kernel
 cp $OUT/system/lib/modules/*.ko $WORKSPACE/archive-kernel/
 
+$WORKSPACE/hudson/makezip.py /dev/block/mmcblk0p11
+
 chmod -R ugo+r $WORKSPACE/archive-kernel
