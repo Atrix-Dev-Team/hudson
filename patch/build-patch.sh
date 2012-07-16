@@ -54,6 +54,9 @@ do
 	--incremental_from=$JENKINS_HOME/jobs/$DEVICE/builds/`basename $job`/archive/archive/$SOURCE_UPDATE_FILE \
 	$JENKINS_HOME/jobs/$DEVICE/builds/$BUILD_NO/archive/archive/$TARGET_UPDATE_FILE \
 	$WORKSPACE/archive/patch-cm-9-`date +%Y%m%d`-NIGHTLY-`basename $job`-to-$BUILD_NO-olympus-$BUILD_NUMBER.zip
+	
+	echo "Copying job `basename $job` build.prop"
+	cp $JENKINS_HOME/jobs/$DEVICE/builds/`basename $job`/archive/archive/build.prop $WORKSPACE/archive/build.prop.`basename $job`
 	echo "####################################################################################"
 	sleep 2
 	
