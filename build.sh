@@ -148,7 +148,7 @@ fi
 rm -f $OUT/*.zip*
 make $CLEAN_TYPE
 
-mka bacon bacon recoveryzip recoveryimage checkapi
+mka bacon recoveryzip recoveryimage checkapi
 check_result "Build failed."
 
 echo "Files in $OUT"
