@@ -75,7 +75,14 @@ fi
 # git config --global user.email jenkins@cyanogenmod.com
 
 # make sure ccache is in PATH
+if [ "$REPO_BRANCH" == "jellybean" ]
+then
+export PATH="$PATH:/opt/local/bin/:$PWD/prebuilts/misc/$(uname|awk '{print tolower($0)}')-x86/ccache"
+export CCACHE_DIR=$WORKSPACE/../.jb_ccache
+else
 export PATH="$PATH:/opt/local/bin/:$PWD/prebuilt/$(uname|awk '{print tolower($0)}')-x86/ccache"
+export CCACHE_DIR=$WORKSPACE/../.ics_ccache
+fi
 
 if [ -f ~/.jenkins_profile ]
 then
