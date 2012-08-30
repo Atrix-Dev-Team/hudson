@@ -41,6 +41,7 @@ unset BUILD_NUMBER
 export PATH=~/bin:$PATH
 
 export USE_CCACHE=1
+export CCACHE_NLEVELS=4
 export BUILD_WITH_COLORS=0
 
 # make sure ccache is in PATH
