@@ -182,4 +182,7 @@ fi
 ZIP=$(ls $WORKSPACE/archive/cm-*.zip)
 unzip -p $ZIP system/build.prop > $WORKSPACE/archive/build.prop
 
+#archive file size for CMUpdater
+ls -nl $WORKSPACE/archive/cm-*.zip | awk '{print $5}'  > $(ls $WORKSPACE/archive/cm-*.zip).size
+
 chmod -R ugo+r $WORKSPACE/archive
