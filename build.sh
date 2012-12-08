@@ -3,7 +3,7 @@
 function check_result {
   if [ "0" -ne "$?" ]
   then
-    echo $1 step failed !
+    echo $1
     exit 1
   fi
 }
