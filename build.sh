@@ -100,14 +100,12 @@ cat .repo/manifests/default.xml
 echo Local Manifest:
 cat .repo/local_manifest.xml
 
-HUDSON_DIR=$WORKSPACE/hudson
-
-echo "About to do $HUDSON_DIR/$REPO_BRANCH-setup.sh"
+echo "About to do $WORKSPACE/hudson/$REPO_BRANCH-setup.sh"
 cd $WORKSPACE/$REPO_BRANCH
-if [ -f $HUDSON_DIR/$REPO_BRANCH-setup.sh ]
+if [ -f $WORKSPACE/hudson/$REPO_BRANCH-setup.sh ]
 then
-  echo "Doing $HUDSON_DIR/$REPO_BRANCH-setup.sh"
-  $HUDSON_DIR/$REPO_BRANCH-setup.sh $WORKSPACE $REPO_BRANCH
+  echo "Doing $WORKSPACE/hudson/$REPO_BRANCH-setup.sh"
+  $WORKSPACE/hudson/$REPO_BRANCH-setup.sh $WORKSPACE $REPO_BRANCH
 fi
 
 cd $WORKSPACE/$REPO_BRANCH
