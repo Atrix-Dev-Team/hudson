@@ -166,6 +166,8 @@ then
   ccache -M 20G
 fi
 
+WORKSPACE=$WORKSPACE LUNCH=$LUNCH sh $WORKSPACE/hudson/changes/buildlog.sh 2>&1
+
 rm -f $OUT/*.zip*
 make $CLEAN_TYPE
 
